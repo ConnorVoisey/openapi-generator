@@ -1,4 +1,5 @@
-import { FieldType, Property, Schema, Schemas } from './types';
+import type { Property } from './fields';
+import type { Schema, Schemas } from './types';
 
 export type InternalSchema = {
 	ref: string;
@@ -18,27 +19,15 @@ export type InternalSchema = {
 	};
 };
 
-export type Field = {
-	required: boolean;
-	property: Property;
-};
-// export type Field = {
-//     type: FieldType;
-//     required?: boolean;
-//     default?: string;
-//     example?: string;
-// };
-
 export const schemas: Schemas = {};
+
 export const schema: (input: {
 	key: string;
-	fields: Record<string, Field>;
-}) => InternalSchema = ({ key, fields }) => {
-	const properties: Record<string, Property> = {};
+	properties: Record<string, Property>;
+}) => InternalSchema = ({ key, properties }) => {
 	const required: string[] = [];
-	for (const fieldKey in fields) {
-		const field = fields[fieldKey];
-		properties[fieldKey] = field.property;
+	for (const fieldKey in properties) {
+		const field = properties[fieldKey];
 		if (field.required !== false) required.push(fieldKey);
 	}
 

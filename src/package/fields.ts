@@ -1,31 +1,108 @@
-import { FieldFormat } from './types';
-import { Field } from './schema';
+import type { FieldFormat, FieldType } from './types';
+
+export type Field = {
+	required?: boolean;
+} & (ArrayField | ObjectField | RecordField | BooleanField | StringField);
+
+export type Property = { required?: boolean } & (
+	| ArrayProperty
+	| BooleanProperty
+	| StringProperty
+);
+
+type ArrayField = {
+	type: 'array';
+	properties: ArrayProperty;
+};
+type ArrayProperty = {
+	items: {
+		minimum?: number;
+		format?: FieldFormat;
+		type: FieldType;
+	};
+	type: 'array';
+};
+type BooleanField = {
+	property: BooleanProperty;
+};
+type BooleanProperty = {
+	type: 'boolean';
+};
+type RecordField = {
+	type: 'object';
+	properties: Record<string, unknown>;
+	additionalProperties: true;
+};
+type StringField = {
+	property: StringProperty;
+};
+type StringFormat =
+	| 'date'
+	| 'date-time'
+	| 'password'
+	| 'byte'
+	| 'binary'
+	| 'email'
+	| 'uuid'
+	| 'url'
+	| 'hostname'
+	| 'ipv4'
+	| 'ipv6';
+type StringProperty = {
+	type: 'string';
+	format?: StringFormat;
+};
+type ObjectField = {
+	type: 'object';
+	properties: Record<string | number, Property>;
+	additionalProperties: boolean;
+	required?: string[];
+};
 
 // TODO: add faker and use it to generate example data for each field
 // TODO: see if faker accepts a seed so the data is always the same
 
 export const string: (input?: {
 	required: boolean;
-	format?: FieldFormat;
+	format?: StringFormat;
 	example?: unknown;
-}) => Field = ({ required, format, example } = { required: true }) => ({
-	required,
-	property: {
-		type: 'string',
-		format,
-		example,
-	},
+}) => StringProperty = (
+	{ required, format, example } = { required: true },
+) => ({
+	type: 'string',
+	format,
+	example,
 });
 
-export const uuid: (required?: boolean) => Field = (required = true) =>
-	string({ required, format: 'uuid' });
+export const uuid: (required?: boolean) => StringProperty = (
+	required = true,
+) => ({ type: 'string', format: 'uuid', required });
 
-export const dateTime: (required?: boolean) => Field = (required = true) =>
-	string({ required, format: 'date-time' });
+export const dateTime: (required?: boolean) => StringProperty = (
+	required = true,
+) => ({ type: 'string', required, format: 'date-time' });
 
-export const boolean: (required?: boolean) => Field = (required = true) => ({
+export const boolean: (required?: boolean) => BooleanProperty = (
+	required = true,
+) => ({
+	type: 'boolean',
 	required,
-	property: {
-		type: 'boolean',
-	},
+});
+
+export const record: (input: {
+	properties: Record<string, unknown>;
+}) => RecordField = ({ properties }) => ({
+	type: 'object',
+	properties,
+	additionalProperties: true,
+});
+
+export const object: (input: {
+	properties: Record<string | number, Property>;
+	required?: string[];
+}) => ObjectField = ({ properties, required }) => ({
+	type: 'object',
+	properties,
+	additionalProperties: true,
+	required,
 });

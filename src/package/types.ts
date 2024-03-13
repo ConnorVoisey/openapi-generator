@@ -61,12 +61,6 @@ export type FieldFormat =
 	| 'ipv4'
 	| 'ipv6';
 
-export type Property = {
-	type: FieldType;
-	format?: FieldFormat;
-	example?: unknown;
-	nullable?: boolean;
-};
 export type Schema = {
 	type: FieldType;
 	properties: Record<string, Property>;

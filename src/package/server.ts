@@ -1,17 +1,22 @@
 import { watch } from 'fs';
-import { Openapi } from './types';
+import type { Openapi } from './types';
 
-export const server = ({
+export const writeOpenapi = async (path: string, openapi: Openapi) => {
+	console.log('writing');
+	await Bun.write(path, JSON.stringify(openapi, null, 4));
+};
+export const serve = ({
 	watchDir,
 	port,
 	openapi,
-}: { watchDir: string; port: number; openapi: Openapi }) => {
-	// const watchDir = `${import.meta.dir}`;
+	writePath,
+}: { watchDir: string; port: number; openapi: Openapi; writePath: string }) => {
 	console.log({ path: watchDir });
 	const docsChannel = 'docs';
 	const watcher = watch(watchDir, { recursive: true }, (event, filename) => {
-		// console.log(`Detected ${event} in ${filename}`);
+		console.log(`Detected ${event} in ${filename}`);
 		server.publish(docsChannel, 'testing message');
+		writeOpenapi(writePath, openapi);
 	});
 
 	const server = Bun.serve({
@@ -24,8 +29,14 @@ export const server = ({
 				return undefined;
 			}
 			const url = new URL(req.url);
-			if (url.pathname === '/openapi') {
-				return Response.json(openapi);
+			if (url.pathname.includes('openapi.json')) {
+				const res = Response.json(openapi);
+				res.headers.set('Access-Control-Allow-Origin', '*');
+				res.headers.set(
+					'Access-Control-Allow-Methods',
+					'GET, POST, PUT, DELETE, OPTIONS',
+				);
+				return res;
 			}
 			// console.log({ url });
 			return new Response(Bun.file('src/package/index.html'));

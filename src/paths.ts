@@ -1,12 +1,12 @@
-import { openapiSchema, todoCreateSchema, todoSchema } from './schema';
+import {
+	authenticateRequestSchema,
+	openapiSchema,
+	todoCreateSchema,
+	todoSchema,
+} from './schemas';
 import { pathUrl } from './package/paths';
-import { Tag } from './package/types';
+import { manageAuthTag, requiresAuthTag, todoTag } from './tags';
 export { paths } from './package/paths';
-
-const todoTag: Tag = {
-	name: 'Todo',
-	description: 'Todo module',
-};
 
 // ideally the path parts should be constructed with a clean looking function like this
 // pathUrl`/user/${pathParam.string('userId')}`;
@@ -28,7 +28,7 @@ console.dir({ val }, { depth: null });
 
 pathUrl`/todo`
 	.get({
-		tags: [todoTag.name],
+		tags: [todoTag],
 		summary: 'Get all todos',
 		description: 'Get all the todos assigned to the logged in user',
 		operationId: 'indexTodo',
@@ -37,7 +37,7 @@ pathUrl`/todo`
 		},
 	})
 	.post({
-		tags: [todoTag.name],
+		tags: [todoTag],
 		summary: 'Create a todo',
 		description: 'Creates a todo assigned to the user.',
 		operationId: 'storeTodo',
@@ -49,7 +49,7 @@ pathUrl`/todo`
 
 pathUrl`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
 	.get({
-		tags: [todoTag.name],
+		tags: [todoTag],
 		summary: 'Gets a todo',
 		description:
 			'Get one todos from its id, it must be assigned to the logged in user',
@@ -59,7 +59,7 @@ pathUrl`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
 		},
 	})
 	.patch({
-		tags: [todoTag.name],
+		tags: [todoTag, requiresAuthTag],
 		summary: 'Update a todo',
 		description: 'Updates a todo, must be assigned to the user.',
 		operationId: 'updateTodo',
@@ -76,5 +76,30 @@ pathUrl`/openapi`.get({
 	operationId: 'openapiJson',
 	responses: {
 		200: openapiSchema.asResponse(),
+	},
+});
+
+pathUrl`/auth/login`.post({
+	tags: [manageAuthTag],
+	summary: 'Login',
+	description: 'Login route',
+	operationId: 'login',
+	requestBody: authenticateRequestSchema.asRequest(),
+	responses: {
+		204: {
+			description: 'Succssfully logged in',
+		},
+	},
+});
+
+pathUrl`/auth/logout`.post({
+	tags: [manageAuthTag],
+	summary: 'Logout',
+	description: 'Logs the current user out.',
+	operationId: 'logout',
+	responses: {
+		204: {
+			description: 'Succssfully logged out.',
+		},
 	},
 });

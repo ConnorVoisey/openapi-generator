@@ -1,4 +1,4 @@
-import { HttpMethod, Parameter, Path, Schema } from './types';
+import type { HttpMethod, Parameter, Path, Schema } from './types';
 
 export const paths: Record<
 	string,
@@ -31,19 +31,19 @@ export const pathUrl: (
 			return builder;
 		},
 		post: (path) => {
-			paths[url].get = path;
+			paths[url].post = path;
 			return builder;
 		},
 		patch: (path) => {
-			paths[url].get = path;
+			paths[url].patch = path;
 			return builder;
 		},
 		put: (path) => {
-			paths[url].get = path;
+			paths[url].put = path;
 			return builder;
 		},
 		delete: (path) => {
-			paths[url].get = path;
+			paths[url].delete = path;
 			return builder;
 		},
 	};

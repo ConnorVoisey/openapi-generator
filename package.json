@@ -4,7 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "bun --hot src/index.ts",
-		"format": "bun biome format --write ."
+		"format": "bun biome format --write .",
+		"lint": "bun biome lint ."
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.6.1",
