@@ -1,20 +1,19 @@
 import type { FieldFormat, FieldType } from './types';
 
-export type Field = {
-	required?: boolean;
-} & (ArrayField | ObjectField | RecordField | BooleanField | StringField);
+export type Field = ArrayField | RecordField | BooleanField | StringField;
 
-export type Property = { required?: boolean } & (
+export type Property =
 	| ArrayProperty
 	| BooleanProperty
 	| StringProperty
-);
+	| ObjectProperty;
 
 type ArrayField = {
 	type: 'array';
 	properties: ArrayProperty;
 };
 type ArrayProperty = {
+	required?: boolean;
 	items: {
 		minimum?: number;
 		format?: FieldFormat;
@@ -52,7 +51,7 @@ type StringProperty = {
 	type: 'string';
 	format?: StringFormat;
 };
-type ObjectField = {
+type ObjectProperty = {
 	type: 'object';
 	properties: Record<string | number, Property>;
 	additionalProperties: boolean;
@@ -63,12 +62,9 @@ type ObjectField = {
 // TODO: see if faker accepts a seed so the data is always the same
 
 export const string: (input?: {
-	required: boolean;
 	format?: StringFormat;
 	example?: unknown;
-}) => StringProperty = (
-	{ required, format, example } = { required: true },
-) => ({
+}) => StringProperty = ({ format, example } = {}) => ({
 	type: 'string',
 	format,
 	example,
@@ -82,11 +78,8 @@ export const dateTime: (required?: boolean) => StringProperty = (
 	required = true,
 ) => ({ type: 'string', required, format: 'date-time' });
 
-export const boolean: (required?: boolean) => BooleanProperty = (
-	required = true,
-) => ({
+export const boolean: (required?: boolean) => BooleanProperty = () => ({
 	type: 'boolean',
-	required,
 });
 
 export const record: (input: {
@@ -100,7 +93,7 @@ export const record: (input: {
 export const object: (input: {
 	properties: Record<string | number, Property>;
 	required?: string[];
-}) => ObjectField = ({ properties, required }) => ({
+}) => ObjectProperty = ({ properties, required }) => ({
 	type: 'object',
 	properties,
 	additionalProperties: true,

@@ -24,3 +24,5 @@ To run:
 bun dev
 ```
 
+
+Use this at some point maybe https://github.com/aspecto-io/genson-js

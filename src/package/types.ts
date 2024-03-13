@@ -1,3 +1,5 @@
+import { Property } from "./fields";
+
 export type Info = {
 	title: string;
 	description: string;
