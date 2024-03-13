@@ -1,0 +1,19 @@
+{
+	"name": "openapi-generator",
+	"module": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "bun --hot src/index.ts",
+		"format": "bun biome format --write ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.6.1",
+		"bun-types": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"openapi-schema-validator": "^12.1.3"
+	}
+}
