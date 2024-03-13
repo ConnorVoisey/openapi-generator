@@ -2,7 +2,7 @@
 
 This project is in very early development. Things to add:
 
- - [ ] tags need to be made into their own module
+ - [x] tags need to be made into their own module
  - [ ] convert this project into an npm package
  - [ ] create template repo, where a user can run `bun create openapi-generator@latest`
  - [ ] auto genearte example data for fields based on type using faker

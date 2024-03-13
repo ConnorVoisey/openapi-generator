@@ -26,8 +26,7 @@ const validator = new OpenAPISchemaValidator({
 });
 describe('basic', () => {
 	test('simple', () => {
-        //@ts-ignore
-		const res = validator.validate(openapi);
+		const res = validator.validate(JSON.parse(JSON.stringify(openapi)));
 		console.dir({ res }, { depth: null });
 		expect(res.errors.length).toBe(0);
 	});

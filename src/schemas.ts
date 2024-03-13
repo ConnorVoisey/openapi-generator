@@ -1,41 +1,43 @@
-import * as field from './package/fields';
+import { Type } from '@sinclair/typebox';
 import { schema } from './package/schemas';
 export { schemas } from './package/schemas';
 
 export const openapiSchema = schema({
 	key: 'Openapi',
-	properties: { id: { type: 'string', format: 'uuid' } },
+	schema: Type.Object({}),
 });
+
 export const todoSchema = schema({
 	key: 'Todo',
-	properties: {
-		id: field.uuid(),
-		task: field.string(),
-		completed: field.boolean(),
-		created_at: field.dateTime(),
-		update_at: field.dateTime(false),
-	},
+	schema: Type.Object({
+		id: Type.String({ format: 'uuid' }),
+		task: Type.String(),
+		completed: Type.Optional(Type.Boolean()),
+		created_at: Type.String({ format: 'date-time' }),
+		updated_at: Type.Optional(Type.String({ format: 'date-time' })),
+	}),
 });
+
 export const todoCreateSchema = schema({
 	key: 'TodoCreate',
-	properties: {
-		task: { type: 'string' },
-		completed: { type: 'boolean', required: false },
-	},
+	schema: Type.Object({
+		task: Type.String(),
+		completed: Type.Optional(Type.Boolean()),
+	}),
 });
 
 export const authenticateRequestSchema = schema({
 	key: 'AuthenticateRequest',
-	properties: {
-		email: field.string(),
-		password: field.string(),
-	},
+	schema: Type.Object({
+		email: Type.String({ format: 'email' }),
+		password: Type.String({ format: 'password' }),
+	}),
 });
 
 export const validationErrorSchema = schema({
 	key: 'Validation Error',
-	properties: {
-		message: field.string(),
-		errors: field.object({ properties: { foo: { type: 'string' } } }),
-	},
+	schema: Type.Object({
+		message: Type.String(),
+		errors: Type.Record(Type.String(), Type.Array(Type.String())),
+	}),
 });

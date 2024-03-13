@@ -1,4 +1,5 @@
-import { Property } from "./fields";
+import { TObject } from '@sinclair/typebox';
+import { Property } from './fields';
 
 export type Info = {
 	title: string;
@@ -21,20 +22,17 @@ export type Tag = {
 export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 export type ContentType = 'application/json';
 export type SchemaKey = string;
+export type ResponseSchema = { $ref: SchemaKey } | TObject;
 export type OpenapiResponse = {
 	description: string;
 	content?: {
 		[k in ContentType]?: {
-			schema: { $ref: SchemaKey };
+			schema: ResponseSchema;
 		};
 	};
 };
-export type Path = {
-	tags: string[];
-	summary: string;
-	description: string;
-	operationId: string;
-	requestBody?: {
+export type RequestBody = 
+{
 		description: string;
 		content: {
 			[k in ContentType]?: {
@@ -44,7 +42,13 @@ export type Path = {
 			};
 		};
 		required: boolean;
-	};
+	}
+export type Path = {
+	tags: string[];
+	summary: string;
+	description: string;
+	operationId: string;
+	requestBody?: RequestBody;
 	responses: Record<number, OpenapiResponse>;
 };
 export type Paths = Record<string, Record<HttpMethod, Path>>;

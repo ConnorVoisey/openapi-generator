@@ -3,9 +3,11 @@ import {
 	openapiSchema,
 	todoCreateSchema,
 	todoSchema,
+    validationErrorSchema,
 } from './schemas';
 import { pathUrl } from './package/paths';
 import { manageAuthTag, requiresAuthTag, todoTag } from './tags';
+import { Type } from '@sinclair/typebox';
 export { paths } from './package/paths';
 
 // ideally the path parts should be constructed with a clean looking function like this
@@ -89,6 +91,7 @@ pathUrl`/auth/login`.post({
 		204: {
 			description: 'Succssfully logged in',
 		},
+        422: validationErrorSchema.asResponse()
 	},
 });
 
@@ -100,6 +103,11 @@ pathUrl`/auth/logout`.post({
 	responses: {
 		204: {
 			description: 'Succssfully logged out.',
+			content: {
+				'application/json': {
+					schema: Type.Object({ foo: Type.String() }),
+				},
+			},
 		},
 	},
 });
