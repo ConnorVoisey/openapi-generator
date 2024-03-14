@@ -1,11 +1,16 @@
 import {
+	registerRequestSchema,
 	authenticateRequestSchema,
 	openapiSchema,
 	todoCreateSchema,
 	todoSchema,
-    validationErrorSchema,
+	validationErrorSchema,
+	unauthenticatedErrorSchema,
+	todoUpdateSchema,
+	profileSchema,
+	todoArraySchema,
 } from './schemas';
-import { pathUrl } from './package/paths';
+import { path } from './package/paths';
 import { manageAuthTag, requiresAuthTag, todoTag } from './tags';
 import { Type } from '@sinclair/typebox';
 export { paths } from './package/paths';
@@ -13,29 +18,15 @@ export { paths } from './package/paths';
 // ideally the path parts should be constructed with a clean looking function like this
 // pathUrl`/user/${pathParam.string('userId')}`;
 
-const val = pathUrl`/user/${{
-	name: 'userId',
-	schema: { type: 'string', properties: {} },
-}}/edit/${{
-	name: 'secondId',
-	schema: { type: 'string', properties: {} },
-}}`.get({
-	responses: {},
-	operationId: '',
-	tags: [],
-	description: '',
-	summary: '',
-});
-console.dir({ val }, { depth: null });
-
-pathUrl`/todo`
+path`/todo`
 	.get({
-		tags: [todoTag],
+		tags: [todoTag, requiresAuthTag],
 		summary: 'Get all todos',
 		description: 'Get all the todos assigned to the logged in user',
 		operationId: 'indexTodo',
 		responses: {
-			200: todoSchema.asResponse(),
+			200: todoArraySchema.asResponse(),
+			401: unauthenticatedErrorSchema.asResponse(),
 		},
 	})
 	.post({
@@ -49,7 +40,7 @@ pathUrl`/todo`
 		},
 	});
 
-pathUrl`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
+path`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
 	.get({
 		tags: [todoTag],
 		summary: 'Gets a todo',
@@ -65,13 +56,24 @@ pathUrl`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
 		summary: 'Update a todo',
 		description: 'Updates a todo, must be assigned to the user.',
 		operationId: 'updateTodo',
-		requestBody: todoCreateSchema.asRequest(),
+		requestBody: todoUpdateSchema.asRequest(),
 		responses: {
 			201: todoSchema.asResponse('Created'),
 		},
+	})
+	.delete({
+		tags: [todoTag, requiresAuthTag],
+		summary: 'Delete a todo',
+		description: 'Deletes a todo, must be assigned to the user.',
+		operationId: 'deleteTodo',
+		responses: {
+			204: {
+				description: 'Successfully Deleted',
+			},
+		},
 	});
 
-pathUrl`/openapi`.get({
+path`/openapi`.get({
 	tags: ['Openapi'],
 	summary: 'Json Openapi',
 	description: 'This sites json openapi spec',
@@ -81,7 +83,20 @@ pathUrl`/openapi`.get({
 	},
 });
 
-pathUrl`/auth/login`.post({
+path`/auth/register`.post({
+	tags: [manageAuthTag],
+	summary: 'Register',
+	description: 'Register route',
+	operationId: 'register',
+	requestBody: registerRequestSchema.asRequest(),
+	responses: {
+		204: {
+			description: 'Succssfully logged in',
+		},
+		422: validationErrorSchema.asResponse(),
+	},
+});
+path`/auth/login`.post({
 	tags: [manageAuthTag],
 	summary: 'Login',
 	description: 'Login route',
@@ -91,11 +106,11 @@ pathUrl`/auth/login`.post({
 		204: {
 			description: 'Succssfully logged in',
 		},
-        422: validationErrorSchema.asResponse()
+		422: validationErrorSchema.asResponse(),
 	},
 });
 
-pathUrl`/auth/logout`.post({
+path`/auth/logout`.post({
 	tags: [manageAuthTag],
 	summary: 'Logout',
 	description: 'Logs the current user out.',
@@ -109,5 +124,15 @@ pathUrl`/auth/logout`.post({
 				},
 			},
 		},
+	},
+});
+
+path`/user`.get({
+	tags: [requiresAuthTag],
+	summary: 'Profile',
+	description: 'Gets the profile of the currently logged in user.',
+	operationId: '/user-get',
+	responses: {
+		200: profileSchema.asResponse(),
 	},
 });

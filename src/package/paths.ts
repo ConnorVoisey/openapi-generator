@@ -5,7 +5,7 @@ export const paths: Record<
 	{ [k in HttpMethod]?: Path } & { parameters: Parameter[] }
 > = {};
 type RouteBuilder = Record<HttpMethod, (path: Path) => RouteBuilder>;
-export const pathUrl: (
+export const path: (
 	pathSegments: TemplateStringsArray,
 	...args: {
 		name: string;

@@ -1,5 +1,5 @@
-import { TObject } from '@sinclair/typebox';
-import { Property } from './fields';
+import type { TObject } from '@sinclair/typebox';
+import type { Property } from './fields';
 
 export type Info = {
 	title: string;
@@ -31,18 +31,17 @@ export type OpenapiResponse = {
 		};
 	};
 };
-export type RequestBody = 
-{
-		description: string;
-		content: {
-			[k in ContentType]?: {
-				schema: {
-					$ref: SchemaKey;
-				};
+export type RequestBody = {
+	description: string;
+	content: {
+		[k in ContentType]?: {
+			schema: {
+				$ref: SchemaKey;
 			};
 		};
-		required: boolean;
-	}
+	};
+	required: boolean;
+};
 export type Path = {
 	tags: string[];
 	summary: string;

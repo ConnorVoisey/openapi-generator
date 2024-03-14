@@ -1,4 +1,4 @@
-import { TObject } from '@sinclair/typebox';
+import type { TArray, TObject } from '@sinclair/typebox';
 import type { Property } from './fields';
 import type { OpenapiResponse, RequestBody, Schema, Schemas } from './types';
 
@@ -21,16 +21,18 @@ export type InternalSchema = {
 };
 
 export const schemas: Record<string, TObjectSchema> = {};
-type TObjectSchema = TObject & {
-	asResponse: (description?: string) => OpenapiResponse;
-	asRequest: (description?: string) => RequestBody;
+type AsResponse = (description?: string) => OpenapiResponse;
+type AsRequest = (description?: string) => RequestBody;
+type TObjectSchema = (TObject | TArray) & {
+	asResponse: AsResponse;
+	asRequest: AsRequest;
 };
 export const schema: (input: {
 	key: string;
-	schema: TObject;
-}) => TObjectSchema = ({ key, schema }) => {
+	schema: TObject | TArray;
+}) => TObjectSchema | TArray = ({ key, schema }) => {
 	const ref = `#/components/schemas/${key}`;
-	const asResponse = (description = 'Successful response') => ({
+	const asResponse: AsResponse = (description = 'Successful response') => ({
 		description,
 		content: {
 			'application/json': {
@@ -38,13 +40,13 @@ export const schema: (input: {
 			},
 		},
 	});
-	const asRequest = (description = 'Input') => ({
+	const asRequest: AsRequest = (description = 'Input') => ({
 		description,
 		required: true,
 		content: { 'application/json': { schema: { $ref: ref } } },
 	});
 
-	const schemaWithMethods = Object.assign(schema, { asRequest, asResponse });
+	const schemaWithMethods = Object.assign({ asRequest, asResponse }, schema);
 	// add the schema to the global schemas object
 	schemas[key] = schemaWithMethods;
 	return schemaWithMethods;

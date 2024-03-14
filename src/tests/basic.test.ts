@@ -1,6 +1,6 @@
 import OpenAPISchemaValidator from 'openapi-schema-validator';
 import { describe, expect, test } from 'bun:test';
-import { Openapi } from '../package/types';
+import type { Openapi } from '../package/types';
 import { tags } from '../tags';
 import { paths } from '../paths';
 import { schemas } from '../schemas';
