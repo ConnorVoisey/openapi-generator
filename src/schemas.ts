@@ -30,9 +30,18 @@ type TObjectSchema = (TObject | TArray) & {
 export const schema: (input: {
 	key: string;
 	schema: TObject | TArray;
-}) => TObjectSchema | TArray = ({ key, schema }) => {
+	responseDefaultDescription?: string;
+	requestDefaultDescription?: string;
+}) => TObjectSchema | TArray = ({
+	key,
+	schema,
+	responseDefaultDescription,
+	requestDefaultDescription,
+}) => {
 	const ref = `#/components/schemas/${key}`;
-	const asResponse: AsResponse = (description = 'Successful response') => ({
+	const asResponse: AsResponse = (
+		description = responseDefaultDescription ?? 'Successful Response',
+	) => ({
 		description,
 		content: {
 			'application/json': {
@@ -40,7 +49,9 @@ export const schema: (input: {
 			},
 		},
 	});
-	const asRequest: AsRequest = (description = 'Input') => ({
+	const asRequest: AsRequest = (
+		description = requestDefaultDescription ?? 'Input',
+	) => ({
 		description,
 		required: true,
 		content: { 'application/json': { schema: { $ref: ref } } },

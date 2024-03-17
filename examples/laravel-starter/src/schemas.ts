@@ -65,6 +65,7 @@ export const unauthenticatedErrorSchema = schema({
 	schema: Type.Object({
 		message: Type.Literal('Unauthenticated.'),
 	}),
+	responseDefaultDescription: 'Unauthenticated',
 });
 
 export const validationErrorSchema = schema({
@@ -76,6 +77,15 @@ export const validationErrorSchema = schema({
 			{ additionalProperties: Type.Array(Type.String()) },
 		),
 	}),
+	responseDefaultDescription: 'Unprocessable Entity',
+});
+
+export const internalErrorSchema = schema({
+	key: 'Internal Server Error',
+	schema: Type.Object({
+		message: Type.String(),
+	}),
+	responseDefaultDescription: 'Internal Server Error',
 });
 
 export const profileSchema = schema({

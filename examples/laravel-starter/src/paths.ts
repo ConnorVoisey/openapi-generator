@@ -9,6 +9,7 @@ import {
 	todoUpdateSchema,
 	profileSchema,
 	todoArraySchema,
+	internalErrorSchema,
 } from './schemas';
 import { path } from '~/paths';
 import { manageAuthTag, requiresAuthTag, todoTag } from './tags';
@@ -27,6 +28,7 @@ path`/todo`
 		responses: {
 			200: todoArraySchema.asResponse(),
 			401: unauthenticatedErrorSchema.asResponse(),
+			500: internalErrorSchema.asResponse(),
 		},
 	})
 	.post({
@@ -37,6 +39,9 @@ path`/todo`
 		requestBody: todoCreateSchema.asRequest(),
 		responses: {
 			201: todoSchema.asResponse('Created'),
+			401: unauthenticatedErrorSchema.asResponse(),
+			422: validationErrorSchema.asResponse(),
+			500: internalErrorSchema.asResponse(),
 		},
 	});
 
@@ -49,6 +54,8 @@ path`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
 		operationId: 'showTodo',
 		responses: {
 			200: todoSchema.asResponse(),
+			401: unauthenticatedErrorSchema.asResponse(),
+			500: internalErrorSchema.asResponse(),
 		},
 	})
 	.patch({
@@ -59,6 +66,9 @@ path`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
 		requestBody: todoUpdateSchema.asRequest(),
 		responses: {
 			201: todoSchema.asResponse('Created'),
+			401: unauthenticatedErrorSchema.asResponse(),
+			422: validationErrorSchema.asResponse(),
+			500: internalErrorSchema.asResponse(),
 		},
 	})
 	.delete({
@@ -70,6 +80,8 @@ path`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
 			204: {
 				description: 'Successfully Deleted',
 			},
+			401: unauthenticatedErrorSchema.asResponse(),
+			500: internalErrorSchema.asResponse(),
 		},
 	});
 
@@ -93,7 +105,9 @@ path`/auth/register`.post({
 		204: {
 			description: 'Succssfully logged in',
 		},
+		401: unauthenticatedErrorSchema.asResponse(),
 		422: validationErrorSchema.asResponse(),
+		500: internalErrorSchema.asResponse(),
 	},
 });
 path`/auth/login`.post({
@@ -107,6 +121,7 @@ path`/auth/login`.post({
 			description: 'Succssfully logged in',
 		},
 		422: validationErrorSchema.asResponse(),
+		500: internalErrorSchema.asResponse(),
 	},
 });
 
@@ -124,6 +139,8 @@ path`/auth/logout`.post({
 				},
 			},
 		},
+		401: unauthenticatedErrorSchema.asResponse(),
+		500: internalErrorSchema.asResponse(),
 	},
 });
 
@@ -134,5 +151,7 @@ path`/user`.get({
 	operationId: '/user-get',
 	responses: {
 		200: profileSchema.asResponse(),
+		401: unauthenticatedErrorSchema.asResponse(),
+		500: internalErrorSchema.asResponse(),
 	},
 });
