@@ -38,8 +38,8 @@ export const serve = ({
 				);
 				return res;
 			}
-			// console.log({ url });
-			return new Response(Bun.file('src/package/index.html'));
+			console.log({ path: import.meta.dir });
+			return new Response(Bun.file(`${import.meta.dir}/index.html`));
 		},
 		websocket: {
 			open(ws) {

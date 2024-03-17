@@ -1,5 +1,5 @@
 import { openapi } from './openapi';
-import { writeOpenapi } from './package/server';
+import { writeOpenapi } from '~/server';
 
 const filePath = './openapi.json';
 writeOpenapi(filePath, openapi);

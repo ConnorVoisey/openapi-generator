@@ -28,7 +28,7 @@
         apiReference.dataset.configuration = JSON.stringify(configuration)
         // setTimeout(()=>window.location.href= window.location.href, 5000); 
         // TODO: add a websocket thing that triggers this when the openapi thing has changed
-        const socket = new WebSocket('ws://localhost:3000');
+        const socket = new WebSocket('ws://localhost:8000');
         const onMessage = (e) => {
             console.log({e})
             window.location.reload(true);

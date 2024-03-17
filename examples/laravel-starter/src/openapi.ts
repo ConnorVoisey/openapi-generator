@@ -1,4 +1,4 @@
-import type { Openapi } from './package/types';
+import type { Openapi } from '~/types';
 import { schemas } from './schemas';
 import { paths } from './paths';
 import { tags } from './tags';

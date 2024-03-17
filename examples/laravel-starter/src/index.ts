@@ -1,4 +1,4 @@
-import { serve } from './package/server';
+import { serve } from '~/server';
 import { openapi } from './openapi';
 
 serve({
