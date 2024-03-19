@@ -1,7 +1,7 @@
+import { type Paths, path } from '~/index';
 import {
 	registerRequestSchema,
 	authenticateRequestSchema,
-	openapiSchema,
 	todoCreateSchema,
 	todoSchema,
 	validationErrorSchema,
@@ -11,15 +11,12 @@ import {
 	todoArraySchema,
 	internalErrorSchema,
 } from './schemas';
-import { path } from '~/paths';
 import { manageAuthTag, requiresAuthTag, todoTag } from './tags';
 import { Type } from '@sinclair/typebox';
-export { paths } from '~/paths';
 
-// ideally the path parts should be constructed with a clean looking function like this
-// pathUrl`/user/${pathParam.string('userId')}`;
+export const paths: Paths = {};
 
-path`/todo`
+path('/todo', {}, paths)
 	.get({
 		tags: [todoTag, requiresAuthTag],
 		summary: 'Get all todos',
@@ -44,8 +41,15 @@ path`/todo`
 			500: internalErrorSchema.asResponse(),
 		},
 	});
-
-path`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
+path(
+	'/todo/{todo}/',
+	{
+		todo: {
+			schema: Type.String({ format: 'uuid' }),
+		},
+	},
+	paths,
+)
 	.get({
 		tags: [todoTag],
 		summary: 'Gets a todo',
@@ -85,17 +89,7 @@ path`/todo/${{ name: 'todo', schema: { type: 'string', properties: {} } }}`
 		},
 	});
 
-path`/openapi`.get({
-	tags: ['Openapi'],
-	summary: 'Json Openapi',
-	description: 'This sites json openapi spec',
-	operationId: 'openapiJson',
-	responses: {
-		200: openapiSchema.asResponse(),
-	},
-});
-
-path`/auth/register`.post({
+path('/auth/register', {}, paths).post({
 	tags: [manageAuthTag],
 	summary: 'Register',
 	description: 'Register route',
@@ -110,7 +104,7 @@ path`/auth/register`.post({
 		500: internalErrorSchema.asResponse(),
 	},
 });
-path`/auth/login`.post({
+path('/auth/login', {}, paths).post({
 	tags: [manageAuthTag],
 	summary: 'Login',
 	description: 'Login route',
@@ -125,7 +119,7 @@ path`/auth/login`.post({
 	},
 });
 
-path`/auth/logout`.post({
+path('/auth/logout', {}, paths).post({
 	tags: [manageAuthTag],
 	summary: 'Logout',
 	description: 'Logs the current user out.',
@@ -144,7 +138,7 @@ path`/auth/logout`.post({
 	},
 });
 
-path`/user`.get({
+path('/user', {}, paths).get({
 	tags: [requiresAuthTag],
 	summary: 'Profile',
 	description: 'Gets the profile of the currently logged in user.',

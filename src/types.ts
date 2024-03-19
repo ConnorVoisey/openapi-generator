@@ -1,5 +1,4 @@
-import type { TObject } from '@sinclair/typebox';
-import type { Property } from './fields';
+import type { TObject, TSchema } from '@sinclair/typebox';
 
 export type Info = {
 	title: string;
@@ -50,7 +49,6 @@ export type Path = {
 	requestBody?: RequestBody;
 	responses: Record<number, OpenapiResponse>;
 };
-export type Paths = Record<string, Record<HttpMethod, Path>>;
 export type FieldType = 'object' | 'integer' | 'string' | 'boolean';
 export type FieldFormat =
 	| 'int64'
@@ -66,10 +64,12 @@ export type FieldFormat =
 	| 'ipv4'
 	| 'ipv6';
 
-export type Schema = {
-	type: FieldType;
-	properties: Record<string, Property>;
-};
+export type Schema = TSchema;
+
+export type Paths = Record<
+	string,
+	{ [k in HttpMethod]?: Path } & { parameters: Parameter[] }
+>;
 type ParameterBase = {
 	name: string;
 	description?: string;

@@ -26,3 +26,5 @@ bun dev
 
 
 Use this at some point maybe https://github.com/aspecto-io/genson-js
+
+[Package template](https://github.com/wobsoriano/bun-lib-starter/blob/main/package.json)

@@ -1,49 +1,58 @@
-import type { HttpMethod, Parameter, Path, Schema } from './types';
+import type { HttpMethod, Parameter, Path, Paths, Schema } from './types';
 
-export const paths: Record<
-	string,
-	{ [k in HttpMethod]?: Path } & { parameters: Parameter[] }
-> = {};
 type RouteBuilder = Record<HttpMethod, (path: Path) => RouteBuilder>;
-export const path: (
-	pathSegments: TemplateStringsArray,
-	...args: {
-		name: string;
-		description?: string;
-		deprecated?: boolean;
-		schema: Schema;
-	}[]
-) => RouteBuilder = (pathSegments, ...args) => {
-	console.log({ path: pathSegments, args });
+type PathParams<T extends string> =
+	T extends `${string}{${infer Param}}${infer Rest}`
+		? {
+				[K in Param | keyof PathParams<Rest>]: K extends Param
+					? PathPartial
+					: // @ts-ignore //TODO: remove this and fix the type
+					  PathParams<Rest>[K];
+		  }
+		: Record<never, never>;
 
-	let url = '';
-	for (let i = 0; i < pathSegments.length; i++) {
-		if (url[i] === '/') url += '/';
-		url += pathSegments[i];
-		if (args[i] !== undefined) url = `${url}{${args[i].name}}`;
+type PathPartial = {
+	description?: string;
+	deprecated?: boolean;
+	schema: Schema;
+};
+
+export const path: <T extends string, P extends PathParams<T>>(
+	path: T,
+	params: P,
+	paths: Paths,
+) => RouteBuilder = (path, params, paths) => {
+	const parameters: Parameter[] = [];
+	for (const name in params) {
+		// @ts-ignore //TODO: remove this by fixing the type
+		const parameter: Parameter = {
+			in: 'path',
+			required: true,
+			name,
+			...params[name],
+		};
+		parameters.push(parameter);
 	}
-	const inObj = { in: 'path', required: true } as const;
-	const parameters = args.map((param) => Object.assign(param, inObj));
-	paths[url] = { parameters };
+	paths[path] = { parameters };
 	const builder: RouteBuilder = {
-		get: (path) => {
-			paths[url].get = path;
+		get: (pathArg) => {
+			paths[path].get = pathArg;
 			return builder;
 		},
-		post: (path) => {
-			paths[url].post = path;
+		post: (pathArg) => {
+			paths[path].post = pathArg;
 			return builder;
 		},
-		patch: (path) => {
-			paths[url].patch = path;
+		patch: (pathArg) => {
+			paths[path].patch = pathArg;
 			return builder;
 		},
-		put: (path) => {
-			paths[url].put = path;
+		put: (pathArg) => {
+			paths[path].put = pathArg;
 			return builder;
 		},
-		delete: (path) => {
-			paths[url].delete = path;
+		delete: (pathArg) => {
+			paths[path].delete = pathArg;
 			return builder;
 		},
 	};

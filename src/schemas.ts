@@ -1,5 +1,4 @@
 import type { TArray, TObject } from '@sinclair/typebox';
-import type { Property } from './fields';
 import type { OpenapiResponse, RequestBody, Schema, Schemas } from './types';
 
 export type InternalSchema = {
@@ -19,25 +18,26 @@ export type InternalSchema = {
 		content: { 'application/json': { schema: { $ref: string } } };
 	};
 };
-
-export const schemas: Record<string, TObjectSchema> = {};
 type AsResponse = (description?: string) => OpenapiResponse;
 type AsRequest = (description?: string) => RequestBody;
 type TObjectSchema = (TObject | TArray) & {
 	asResponse: AsResponse;
 	asRequest: AsRequest;
 };
-export const schema: (input: {
-	key: string;
-	schema: TObject | TArray;
-	responseDefaultDescription?: string;
-	requestDefaultDescription?: string;
-}) => TObjectSchema | TArray = ({
-	key,
-	schema,
-	responseDefaultDescription,
-	requestDefaultDescription,
-}) => {
+export const schema: (
+	input: {
+		key: string;
+		schema: TObject | TArray;
+		responseDefaultDescription?: string;
+		requestDefaultDescription?: string;
+	},
+
+	/** the created schema is added to main schemas object, this should be used as the openapi/components/schema **/
+	schemas: Schemas,
+) => TObjectSchema | TArray = (
+	{ key, schema, responseDefaultDescription, requestDefaultDescription },
+	schemas,
+) => {
 	const ref = `#/components/schemas/${key}`;
 	const asResponse: AsResponse = (
 		description = responseDefaultDescription ?? 'Successful Response',

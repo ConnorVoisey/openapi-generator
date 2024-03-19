@@ -11,9 +11,9 @@ export const serve = ({
 	openapi,
 	writePath,
 }: { watchDir: string; port: number; openapi: Openapi; writePath: string }) => {
-	console.log({ path: watchDir });
+	// console.log({ path: watchDir });
 	const docsChannel = 'docs';
-	const watcher = watch(watchDir, { recursive: true }, (event, filename) => {
+	watch(watchDir, { recursive: true }, (event, filename) => {
 		console.log(`Detected ${event} in ${filename}`);
 		server.publish(docsChannel, 'testing message');
 		writeOpenapi(writePath, openapi);
