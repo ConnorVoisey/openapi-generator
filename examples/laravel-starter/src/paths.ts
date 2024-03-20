@@ -52,7 +52,7 @@ path(
 )
 	.get({
 		tags: [todoTag],
-		summary: 'Gets a todo',
+		summary: 'Gets a todo edit',
 		description:
 			'Get one todos from its id, it must be assigned to the logged in user',
 		operationId: 'showTodo',
@@ -69,7 +69,7 @@ path(
 		operationId: 'updateTodo',
 		requestBody: todoUpdateSchema.asRequest(),
 		responses: {
-			201: todoSchema.asResponse('Created'),
+			200: todoSchema.asResponse(),
 			401: unauthenticatedErrorSchema.asResponse(),
 			422: validationErrorSchema.asResponse(),
 			500: internalErrorSchema.asResponse(),

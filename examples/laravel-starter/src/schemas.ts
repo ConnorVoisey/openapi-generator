@@ -21,7 +21,7 @@ export const todoSchema = schema(
 );
 export const todoArraySchema = schema(
 	{
-		key: 'Todo Array',
+		key: 'TodoArray',
 		schema: Type.Array(todoModel),
 	},
 	schemas,
@@ -78,7 +78,7 @@ export const authenticateRequestSchema = schema(
 
 export const unauthenticatedErrorSchema = schema(
 	{
-		key: 'Unauthenticated Error',
+		key: 'UnauthenticatedError',
 		schema: Type.Object({
 			message: Type.Literal('Unauthenticated.'),
 		}),
@@ -89,7 +89,7 @@ export const unauthenticatedErrorSchema = schema(
 
 export const validationErrorSchema = schema(
 	{
-		key: 'Validation Error',
+		key: 'ValidationError',
 		schema: Type.Object({
 			message: Type.String(),
 			errors: Type.Object(
@@ -104,7 +104,7 @@ export const validationErrorSchema = schema(
 
 export const internalErrorSchema = schema(
 	{
-		key: 'Internal Server Error',
+		key: 'InternalServerError',
 		schema: Type.Object({
 			message: Type.String(),
 		}),
@@ -117,7 +117,7 @@ const permissions = ['crud:users'] as const;
 const roles = ['admin', 'user'] as const;
 export const profileSchema = schema(
 	{
-		key: 'Profile Schema',
+		key: 'ProfileSchema',
 		schema: Type.Object({
 			id: Type.String(),
 			name: Type.String(),

@@ -21,7 +21,8 @@
 		"prepublishOnly": "bun run build",
 		"dev": "bun --hot src/index.ts",
 		"format": "bun biome format --write .",
-		"lint": "bun biome lint ."
+		"lint": "bun biome lint .",
+        "write": "bun src/write.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.6.1",
