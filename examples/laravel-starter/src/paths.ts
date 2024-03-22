@@ -1,4 +1,4 @@
-import { type Paths, path } from '~/index';
+import { getPathBuilder } from '~/index';
 import {
 	registerRequestSchema,
 	authenticateRequestSchema,
@@ -14,9 +14,9 @@ import {
 import { manageAuthTag, requiresAuthTag, todoTag } from './tags';
 import { Type } from '@sinclair/typebox';
 
-export const paths: Paths = {};
+export const { paths, addPath } = getPathBuilder();
 
-path('/todo', {}, paths)
+addPath('/todo', {})
 	.get({
 		tags: [todoTag, requiresAuthTag],
 		summary: 'Get all todos',
@@ -41,15 +41,11 @@ path('/todo', {}, paths)
 			500: internalErrorSchema.asResponse(),
 		},
 	});
-path(
-	'/todo/{todo}/',
-	{
-		todo: {
-			schema: Type.String({ format: 'uuid' }),
-		},
+addPath('/todo/{todo}/', {
+	todo: {
+		schema: Type.String({ format: 'uuid' }),
 	},
-	paths,
-)
+})
 	.get({
 		tags: [todoTag],
 		summary: 'Gets a todo edit',
@@ -89,7 +85,7 @@ path(
 		},
 	});
 
-path('/auth/register', {}, paths).post({
+addPath('/auth/register', {}).post({
 	tags: [manageAuthTag],
 	summary: 'Register',
 	description: 'Register route',
@@ -104,7 +100,7 @@ path('/auth/register', {}, paths).post({
 		500: internalErrorSchema.asResponse(),
 	},
 });
-path('/auth/login', {}, paths).post({
+addPath('/auth/login', {}).post({
 	tags: [manageAuthTag],
 	summary: 'Login',
 	description: 'Login route',
@@ -119,7 +115,7 @@ path('/auth/login', {}, paths).post({
 	},
 });
 
-path('/auth/logout', {}, paths).post({
+addPath('/auth/logout', {}).post({
 	tags: [manageAuthTag],
 	summary: 'Logout',
 	description: 'Logs the current user out.',
@@ -138,7 +134,7 @@ path('/auth/logout', {}, paths).post({
 	},
 });
 
-path('/user', {}, paths).get({
+addPath('/user', {}).get({
 	tags: [requiresAuthTag],
 	summary: 'Profile',
 	description: 'Gets the profile of the currently logged in user.',

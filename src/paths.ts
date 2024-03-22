@@ -17,45 +17,51 @@ type PathPartial = {
 	schema: Schema;
 };
 
-export const path: <T extends string, P extends PathParams<T>>(
-	path: T,
-	params: P,
-	paths: Paths,
-) => RouteBuilder = (path, params, paths) => {
-	const parameters: Parameter[] = [];
-	for (const name in params) {
-		// @ts-ignore //TODO: remove this by fixing the type
-		const parameter: Parameter = {
-			in: 'path',
-			required: true,
-			name,
-			...params[name],
+export const getPathBuilder = () => {
+	const paths: Paths = {};
+	const addPath: <T extends string, P extends PathParams<T>>(
+		path: T,
+		params: P,
+	) => RouteBuilder = (path, params) => {
+		const parameters: Parameter[] = [];
+		for (const name in params) {
+			// @ts-ignore //TODO: remove this by fixing the type
+			const parameter: Parameter = {
+				in: 'path',
+				required: true,
+				name,
+				...params[name],
+			};
+			parameters.push(parameter);
+		}
+		paths[path] = { parameters };
+		const builder: RouteBuilder = {
+			get: (pathArg) => {
+				paths[path].get = pathArg;
+				return builder;
+			},
+			post: (pathArg) => {
+				paths[path].post = pathArg;
+				return builder;
+			},
+			patch: (pathArg) => {
+				paths[path].patch = pathArg;
+				return builder;
+			},
+			put: (pathArg) => {
+				paths[path].put = pathArg;
+				return builder;
+			},
+			delete: (pathArg) => {
+				paths[path].delete = pathArg;
+				return builder;
+			},
 		};
-		parameters.push(parameter);
-	}
-	paths[path] = { parameters };
-	const builder: RouteBuilder = {
-		get: (pathArg) => {
-			paths[path].get = pathArg;
-			return builder;
-		},
-		post: (pathArg) => {
-			paths[path].post = pathArg;
-			return builder;
-		},
-		patch: (pathArg) => {
-			paths[path].patch = pathArg;
-			return builder;
-		},
-		put: (pathArg) => {
-			paths[path].put = pathArg;
-			return builder;
-		},
-		delete: (pathArg) => {
-			paths[path].delete = pathArg;
-			return builder;
-		},
-	};
 
-	return builder;
+		return builder;
+	};
+	return {
+		paths,
+		addPath,
+	};
 };

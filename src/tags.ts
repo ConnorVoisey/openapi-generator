@@ -1,6 +1,13 @@
 import type { Tag } from './types';
 
-export const tag = (tag: Tag, tags: Tag[]) => {
-	tags.push(tag);
-	return tag.name;
+export const getTagBuilder = () => {
+	const tags: Tag[] = [];
+	const addTag = (tag: Tag) => {
+		tags.push(tag);
+		return tag.name;
+	};
+	return {
+		tags,
+		addTag,
+	};
 };

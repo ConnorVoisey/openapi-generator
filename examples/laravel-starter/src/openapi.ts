@@ -1,7 +1,7 @@
 import { schemas } from './schemas';
 import { tags } from './tags';
 import { paths } from './paths';
-import { Openapi } from '~/index';
+import type { Openapi } from '~/index';
 
 const url = 'https://api.laravel-svelte-template.local';
 export const openapi: Openapi = {
