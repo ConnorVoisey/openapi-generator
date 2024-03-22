@@ -4,12 +4,8 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"description": "",
-	"files": [
-		"dist"
-	],
-	"keywords": [
-		"bun"
-	],
+	"files": ["dist"],
+	"keywords": ["bun"],
 	"license": "MIT",
 	"homepage": "https://github.com/ConnorVoisey/openapi-generator#readme",
 	"repository": {
