@@ -1,4 +1,4 @@
-import { watch } from 'fs';
+import { watch } from 'node:fs';
 import type { Openapi } from './types';
 import type { Server } from 'bun';
 
